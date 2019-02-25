@@ -3,6 +3,8 @@
 (setq mac-right-option-modifier nil)
 (setq mac-command-modifier 'super)
 
+(add-to-list 'load-path "~/.emacs.d/my-lisp")
+
 (add-to-list 'load-path "~/.emacs.d/vendor/aquamacs")
 (require 'emulate-mac-keyboard-mode)
 (emulate-mac-spanish-keyboard-mode)
@@ -15,6 +17,10 @@
 (global-set-key [s-left] 'beginning-of-line)
 (global-set-key [s-down] 'end-of-buffer)
 (global-set-key [s-up] 'beginning-of-buffer)
+
+(require 'jes-enter-selection)
+(global-unset-key [s-e])
+(global-set-key [s-e] 'jes-enter-selection)
 
 ;; Easier window navigation
 (global-set-key [C-s-M-left] 'windmove-left)
@@ -203,7 +209,8 @@
             (add-to-list 'projectile-globally-ignored-directories "docTypeScript")
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
-            (add-to-list 'projectile-globally-ignored-directories "javascripts/oat")))
+            (add-to-list 'projectile-globally-ignored-directories "javascripts/oat"))
+  :bind (("C-c p s g" . 'projectile-grep)))
 
 ;; Disable backups. We use git
 (setq make-backup-files nil)
