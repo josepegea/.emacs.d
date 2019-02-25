@@ -58,7 +58,8 @@
  '(ns-alternate-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))))
+    (inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+ '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -204,6 +205,9 @@
             (add-to-list 'projectile-globally-ignored-files "*full.js")
             (add-to-list 'projectile-globally-ignored-directories "javascripts/oat")))
 
+;; Disable backups. We use git
+(setq make-backup-files nil)
+
 ;; flx && flx-ido
 (use-package flx-ido
   :ensure t
@@ -277,15 +281,20 @@
 (add-hook 'ruby-mode-hook
           (lambda () (rvm-activate-corresponding-ruby)))
 
+;; Needed for RSpec below
+(use-package inf-ruby
+  :ensure t
+  :defer t)
+
 ;; RSpec Mode
 (use-package rspec-mode
   :ensure t
   :defer t
   :config (add-hook 'ruby-mode-hook
                     (lambda () (rspec-mode))
-                    (add-hook 'dired-mode-hook 'rspec-dired-mode)
-                    (add-hook 'after-init-hook 'inf-ruby-switch-setup)))
+                    (add-hook 'dired-mode-hook 'rspec-dired-mode)))
 
+(add-hook 'after-init-hook 'inf-ruby-switch-setup)
 
 ;; Proper highlighting of .arb files
 (add-to-list 'auto-mode-alist '("\\.arb\\'" . ruby-mode))
