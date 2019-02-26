@@ -64,7 +64,7 @@
  '(ns-alternate-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+    (yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -306,6 +306,11 @@
 ;; Proper highlighting of .arb files
 (add-to-list 'auto-mode-alist '("\\.arb\\'" . ruby-mode))
 
+
+;; YAML mode
+(use-package yaml-mode
+  :ensure t
+  :diminish)
 
 ;; TODO -> Still not working
 ;; Change background color of non-active windows/buffers
