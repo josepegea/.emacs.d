@@ -12,15 +12,19 @@
 ;; Basic macOS keys
 (global-set-key [s-M-left] 'previous-buffer)
 (global-set-key [s-M-right] 'next-buffer)
-(global-set-key [s-<] 'other-frame) ;; TODO
+(global-set-key (kbd "s-<") 'other-frame)
 (global-set-key [s-right] 'end-of-line)
 (global-set-key [s-left] 'beginning-of-line)
 (global-set-key [s-down] 'end-of-buffer)
 (global-set-key [s-up] 'beginning-of-buffer)
 
 (require 'jes-enter-selection)
-(global-unset-key [s-e])
-(global-set-key [s-e] 'jes-enter-selection)
+(global-set-key (kbd "s-e") 'jes-enter-selection)
+(global-set-key (kbd "s-G") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill)
+(add-hook 'isearch-mode-hook (lambda () (interactive)
+                               (setq isearch-message (concat isearch-message "[ " (car search-ring) " ] "))
+                               (isearch-search-and-update)))
 
 ;; Easier window navigation
 (global-set-key [C-s-M-left] 'windmove-left)
