@@ -18,13 +18,17 @@
 (global-set-key [s-down] 'end-of-buffer)
 (global-set-key [s-up] 'beginning-of-buffer)
 
-(require 'jes-enter-selection)
-(global-set-key (kbd "s-e") 'jes-enter-selection)
-(global-set-key (kbd "s-G") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill)
-(add-hook 'isearch-mode-hook (lambda () (interactive)
-                               (setq isearch-message (concat isearch-message "[ " (car search-ring) " ] "))
-                               (isearch-search-and-update)))
+;; macOS like search and replace
+(require 'jes-macos-bindings)
+                                                                  ;; "Cmd-f" Find -> Works as is
+                                                                  ;; "Cmd-g" Find next -> Works as is
+(global-set-key (kbd "s-e") 'jes-enter-selection)                 ;; "Cmd-e" Enter selection for next finds
+(global-set-key (kbd "s-G") 'isearch-repeat-backward)             ;; "Cmd-G" Find previous
+(define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill)      ;; "Cmd-v" When isearching pastes the normal clipboard contents
+(global-set-key (kbd "s-r") 'isearch-query-replace)               ;; "Cmd-r" Replace with current isearch string
+(global-set-key (kbd "s-R") 'isearch-occur)                       ;; "Cmd-R" Occur with current isearch string
+(global-set-key (kbd "s-F") 'jes-projectile-grep)                 ;; "Cmd-F" Projectile grep with current isearch string
+(global-set-key (kbd "<C-s-268632070>") 'projectile-grep)         ;; "C-Cmd-f" Projectile grep (nicer, shorter shortcut)
 
 ;; Easier window navigation
 (global-set-key [C-s-M-left] 'windmove-left)
