@@ -72,7 +72,7 @@
  '(ns-alternate-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+    (markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -191,6 +191,26 @@
   :config (custom-set-variables
            '(coffee-tab-width 2)))
 
+;; Org-mode
+(require 'org)
+
+;; Org-reveal
+(use-package ox-reveal
+  :ensure t
+  :config (setq org-reveal-root ".")) ;; We serve always from an adhoc server
+
+;; Markdown
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (progn
+          (setq markdown-command "multimarkdown")
+          (setq markdown-max-image-size '(700 . 300)))
+  )
+
 (use-package projectile
   :ensure t
   :diminish projectile-mode "Ⓟ"
@@ -218,7 +238,8 @@
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
             (add-to-list 'projectile-globally-ignored-directories "javascripts/oat"))
-  :bind (("C-c p s g" . 'projectile-grep)))
+  :bind (("C-c p s g" . 'projectile-grep)
+         ("M-s-∫" . 'projectile-run-shell)))
 
 ;; Disable backups. We use git
 (setq make-backup-files nil)
@@ -410,9 +431,10 @@
 ;; (setq tramp-verbose 6)
 
 ;; Needed to connect to Android/Termux
-;; TODO: Uncomment after loading TRAM
-;; (add-to-list 'tramp-connection-properties
-;;              (list (regexp-quote "android") "remote-shell" "/data/data/com.termux/files/usr/bin/bash"))
+(require 'tramp)
 
-;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-;; (add-to-list 'tramp-remote-path "/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets")
+(add-to-list 'tramp-connection-properties
+             (list (regexp-quote "android") "remote-shell" "/data/data/com.termux/files/usr/bin/bash"))
+
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(add-to-list 'tramp-remote-path "/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets")
