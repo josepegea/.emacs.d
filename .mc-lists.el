@@ -3,9 +3,13 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        cua-exchange-point-and-mark
         ns-prev-frame
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        mark-whole-buffer
+        nonincremental-search-forward
+        ns-copy-including-secondary
         ))

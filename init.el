@@ -72,7 +72,7 @@
  '(ns-alternate-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+    (tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -366,42 +366,45 @@
 (global-set-key (kbd "C-c s") 'hs-show-block)
 (global-set-key (kbd "s-y") 'hs-toggle-hiding)
 
-;; TODO: When we try Angular and TS
-;; ;; Typescript
+;; Typescript
 
-;; (setq exec-path (append exec-path '("/Users/jes/.nvm/versions/node/v9.2.0/bin")))
+(use-package tide
+  :ensure t
+  :defer t)
 
-;; (defun setup-tide-mode ()
-;;   (interactive)
-;;   (tide-setup)
-;;   (flycheck-mode +1)
-;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
-;;   (eldoc-mode +1)
-;;   (tide-hl-identifier-mode +1)
-;;   ;; company is an optional dependency. You have to
-;;   ;; install it separately via package-install
-;;   ;; `M-x package-install [ret] company`
-;;   (company-mode +1)
-;;   )
+(setq exec-path (append exec-path '("/Users/jes/.nvm/versions/node/v9.2.0/bin")))
 
-;; ;; aligns annotation to the right hand side
-;; (setq company-tooltip-align-annotations t)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1)
+  )
 
-;; ;; formats the buffer before saving
-;; ;; (add-hook 'before-save-hook 'tide-format-before-save)
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
 
-;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; formats the buffer before saving
+;; (add-hook 'before-save-hook 'tide-format-before-save)
 
-;; ;; Karma
-;; (require 'karma)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
-;; ;; Angular2 goodies
-;; (add-to-list 'load-path "~/.emacs.d/my-lisp")
-;; (require 'jes-ng2)
-;; (add-hook 'typescript-mode-hook
-;;   (lambda () (global-set-key (kbd "s-M-y") 'jes-ng2-alternate)))
-;; (add-hook 'web-mode-hook
-;;   (lambda () (global-set-key (kbd "s-M-y") 'jes-ng2-alternate)))
+;; Karma
+(require 'karma)
+
+;; Angular2 goodies
+(add-to-list 'load-path "~/.emacs.d/my-lisp")
+(require 'jes-ng2)
+(add-hook 'typescript-mode-hook
+  (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
+(add-hook 'web-mode-hook
+  (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
 
 ;; Disable non-magit version control
 (delete 'Git vc-handled-backends)
