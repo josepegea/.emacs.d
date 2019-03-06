@@ -396,7 +396,8 @@
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;; Karma
-(require 'karma)
+(use-package karma
+  :defer t)
 
 ;; Angular2 goodies
 (add-to-list 'load-path "~/.emacs.d/my-lisp")
