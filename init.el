@@ -72,7 +72,7 @@
  '(ns-alternate-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+    (yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -442,3 +442,10 @@
 
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 (add-to-list 'tramp-remote-path "/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets")
+
+;; Yasnippets
+(use-package yasnippet
+  :ensure t)
+(use-package yasnippet-snippets
+  :ensure t)
+(yas-global-mode 1)
