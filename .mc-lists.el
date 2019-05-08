@@ -5,6 +5,7 @@
       '(
         cua-exchange-point-and-mark
         ns-prev-frame
+        org-self-insert-command
         ))
 
 (setq mc/cmds-to-run-once

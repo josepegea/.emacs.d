@@ -70,6 +70,7 @@
  '(coffee-tab-width 2)
  '(custom-enabled-themes (quote (wombat)))
  '(ns-alternate-modifier (quote meta))
+ '(org-agenda-files (quote ("~/Code/Platform161/TeamLead/TeamLead.org")))
  '(package-selected-packages
    (quote
     (yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
@@ -307,6 +308,9 @@
          (let ((fn (dired-get-file-for-visit)))
            (start-process "default-app" nil "open" fn))))))
 
+;; Make other window default copy target in dired
+(setq dired-dwim-target t)
+
 ;; RVM
 (use-package rvm
   :ensure t
@@ -449,3 +453,6 @@
 (use-package yasnippet-snippets
   :ensure t)
 (yas-global-mode 1)
+
+;; Start server
+(server-start)
