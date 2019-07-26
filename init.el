@@ -70,10 +70,12 @@
  '(coffee-tab-width 2)
  '(custom-enabled-themes (quote (wombat)))
  '(ns-alternate-modifier (quote meta))
- '(org-agenda-files (quote ("~/Code/Platform161/TeamLead/TeamLead.org")))
+ '(org-agenda-files
+   (quote
+    ("~/Code/Platform161/TeamLead" "~/Code/Platform161/TeamLead/Projects")))
  '(package-selected-packages
    (quote
-    (yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
+    (groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -410,6 +412,12 @@
   (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
 (add-hook 'web-mode-hook
   (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
+
+;; Groovy
+(use-package groovy-mode
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("Jenkinsfile" . groovy-mode))
 
 ;; Disable non-magit version control
 (delete 'Git vc-handled-backends)
