@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: python
+# name: ruby
 # key: ru_
 # --
 #+BEGIN_SRC ruby
