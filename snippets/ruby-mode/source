@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: source
+# key: source_
+# --
+source "https://rubygems.org"

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: create_table
+# key: creat_
+# --
+create_table $0 do |t|
+  t.string $1
+end
+
