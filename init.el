@@ -28,7 +28,7 @@
 (global-set-key (kbd "s-r") 'isearch-query-replace)               ;; "Cmd-r" Replace with current isearch string
 (global-set-key (kbd "s-R") 'isearch-occur)                       ;; "Cmd-R" Occur with current isearch string
 (global-set-key (kbd "s-F") 'jes-projectile-grep)                 ;; "Cmd-F" Projectile grep with current isearch string
-(global-set-key (kbd "<C-s-268632070>") 'projectile-grep)         ;; "C-Cmd-f" Projectile grep (nicer, shorter shortcut)
+(global-set-key (kbd "C-s-f") 'projectile-grep)                   ;; "C-Cmd-f" Projectile grep (nicer, shorter shortcut)
 
 ;; Easier window navigation
 (global-set-key [C-s-M-left] 'windmove-left)
@@ -68,15 +68,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(coffee-tab-width 2)
- '(custom-enabled-themes (quote (wombat)))
- '(ns-alternate-modifier (quote meta))
+ '(custom-enabled-themes '(wombat))
+ '(ns-alternate-modifier 'meta)
  '(org-agenda-files
-   (quote
-    ("~/Code/Platform161/TeamLead" "~/Code/Platform161/TeamLead/Projects")))
+   '("~/Code/Platform161/TeamLead" "~/Code/Platform161/TeamLead/Projects"))
  '(package-selected-packages
-   (quote
-    (groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package)))
- '(safe-local-variable-values (quote ((rspec-spec-command . "rspec -Ispec/app")))))
+   '(vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+ '(safe-local-variable-values
+   '((web-mode-markup-indent-offset . 4)
+     (rspec-spec-command . "rspec -Ispec/app"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -122,6 +122,7 @@
   (define-key org-mode-map [M-right] nil)
   (define-key org-mode-map [S-M-left] nil)
   (define-key org-mode-map [S-M-right] nil)
+  (turn-on-auto-fill)
 )
 (add-hook 'org-mode-hook  'my-org-mode-hook)
 
@@ -132,6 +133,7 @@
   (define-key markdown-mode-map [M-right] nil)
   (define-key markdown-mode-map [S-M-left] nil)
   (define-key markdown-mode-map [S-M-right] nil)
+  (turn-on-auto-fill)
 )
 (add-hook 'markdown-mode-hook  'my-markdown-mode-hook)
 
@@ -197,6 +199,14 @@
 ;; Org-mode
 (require 'org)
 
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . true)
+    (ruby . t)
+    (shell . t)
+    (sql . t)
+    (sqlite . t)))
+
 ;; Org-reveal
 (use-package ox-reveal
   :ensure t
@@ -227,6 +237,8 @@
             (add-to-list 'projectile-globally-ignored-directories "tmp")
             (add-to-list 'projectile-globally-ignored-directories "dist")
             (add-to-list 'projectile-globally-ignored-directories "public/raml/scripts")
+            (add-to-list 'projectile-globally-ignored-directories "bundle")
+            (add-to-list 'projectile-globally-ignored-directories "vcr_cassettes")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".full.js")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".min.js")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".min.css")
@@ -235,14 +247,17 @@
             ;; Specific for Platform161 project
             (add-to-list 'projectile-globally-ignored-directories "import")
             (add-to-list 'projectile-globally-ignored-directories "export")
+            (add-to-list 'projectile-globally-ignored-directories "docker/resources/sql")
             ;; Specific for Platform161's new UI project
             (add-to-list 'projectile-globally-ignored-directories "node_modules")
             (add-to-list 'projectile-globally-ignored-directories "docTypeScript")
+            ;; Specific for Platform161's Jira Reports project
+            (add-to-list 'projectile-globally-ignored-directories "output")
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
             (add-to-list 'projectile-globally-ignored-directories "javascripts/oat"))
   :bind (("C-c p s g" . 'projectile-grep)
-         ("M-s-∫" . 'projectile-run-shell)))
+         ("M-s-s" . 'vterm)))
 
 ;; Disable backups. We use git
 (setq make-backup-files nil)
@@ -282,8 +297,7 @@
 (define-key (current-global-map) [remap textmate-goto-file] 'projectile-switch-to-buffer)
 
 ;; Ctrl-Command-T -> Select file in project (used when the file isn't already in a buffer)
-;; I don't know why, Emacs doesn't understand "C-s-t" and instead wants <C-s-268632084>
-(global-set-key (kbd "<C-s-268632084>") 'projectile-find-file)
+(global-set-key (kbd "C-s-t") 'projectile-find-file)
 
 ;; Use the MacOS color picker
 (require 'color-picker)
@@ -425,7 +439,7 @@
 ;; Multiple cursors
 (use-package multiple-cursors
   :ensure t
-  :bind (("<C-s-M-268632071>" . 'mc/mark-next-like-this)  ;; For some reason, 'g' is not allowed here
+  :bind (("C-s-M-g" . 'mc/mark-next-like-this)
          ("C-s-M-S-g" . 'mc/mark-previous-like-this)))
 
 ;; Folding of XML
@@ -462,5 +476,14 @@
   :ensure t)
 (yas-global-mode 1)
 
+;; vterm
+(use-package vterm
+  :ensure t)
+
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)))
+
 ;; Start server
 (server-start)
+(put 'downcase-region 'disabled nil)

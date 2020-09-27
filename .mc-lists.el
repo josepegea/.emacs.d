@@ -4,8 +4,11 @@
 (setq mc/cmds-to-run-for-all
       '(
         cua-exchange-point-and-mark
+        cua-paste
         ns-prev-frame
+        org-force-self-insert
         org-self-insert-command
+        other-frame
         ))
 
 (setq mc/cmds-to-run-once
