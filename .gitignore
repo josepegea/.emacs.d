@@ -7,4 +7,5 @@ network-security.data
 projectile-bookmarks.eld
 transient/
 tramp
+.mc-lists.el
 *~
