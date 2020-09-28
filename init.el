@@ -259,7 +259,7 @@
             (add-to-list 'projectile-globally-ignored-files "*full.js")
             (add-to-list 'projectile-globally-ignored-directories "javascripts/oat"))
   :bind (("C-c p s g" . 'projectile-grep)
-         ("M-s-s" . 'vterm)))
+         ("M-s-s" . 'vterm-other-window)))
 
 ;; Disable backups. We use git
 (setq make-backup-files nil)
@@ -484,7 +484,8 @@
 
 (add-hook 'vterm-mode-hook
           (lambda ()
-            (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)))
+            (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)
+            (display-line-numbers-mode -1)))
 
 ;; Start server
 (server-start)
