@@ -425,9 +425,9 @@
 (add-to-list 'load-path "~/.emacs.d/my-lisp")
 (require 'jes-ng2)
 (add-hook 'typescript-mode-hook
-  (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
+  (lambda () (global-set-key (kbd "M-s-y") 'jes-ng2-alternate)))
 (add-hook 'web-mode-hook
-  (lambda () (global-set-key (kbd "M-s-¥") 'jes-ng2-alternate)))
+  (lambda () (global-set-key (kbd "M-s-y") 'jes-ng2-alternate)))
 
 ;; Groovy
 (use-package groovy-mode
