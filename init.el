@@ -9,6 +9,11 @@
 (require 'emulate-mac-keyboard-mode)
 (emulate-mac-spanish-keyboard-mode)
 
+(cond
+ ((string-equal system-type "gnu/linux")
+  (progn
+    (require 'command-keys-for-linux))))
+
 ;; Basic macOS keys
 (global-set-key [s-M-left] 'previous-buffer)
 (global-set-key [s-M-right] 'next-buffer)
