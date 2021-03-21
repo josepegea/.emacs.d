@@ -75,7 +75,7 @@
      "~/Code/Platform161/TeamLead/Projects"
      "~/Dropbox/OrgLife"))
  '(package-selected-packages
-   '(vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app"))))
@@ -84,7 +84,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(vterm-color-blue ((t (:foreground "SlateBlue1")))))
 
 
 ;; Window title
@@ -120,6 +120,8 @@
 (defun my-org-mode-hook ()
   "Hook for Org mode tweaks."
   (setq org-replace-disputed-keys t)
+  (setq org-html-html5-fancy t)
+  (setq org-html-doctype "html5")
   (define-key org-mode-map [M-left] nil)
   (define-key org-mode-map [M-right] nil)
   (define-key org-mode-map [S-M-left] nil)
@@ -186,6 +188,10 @@
 (use-package haml-mode
   :ensure t)
 
+;; Get slim mode
+(use-package slim-mode
+  :ensure t)
+
 ;; Javascript mode
 (use-package js2-mode
   :ensure t
@@ -213,6 +219,10 @@
 (use-package ox-reveal
   :ensure t
   :config (setq org-reveal-root ".")) ;; We serve always from an adhoc server
+
+;; Htmlize for syntax coloring in Org-reveal
+(use-package htmlize
+  :ensure t)
 
 ;; Markdown
 (use-package markdown-mode
