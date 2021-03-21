@@ -70,12 +70,9 @@
  '(coffee-tab-width 2)
  '(custom-enabled-themes '(wombat))
  '(ns-alternate-modifier 'meta)
- '(org-agenda-files
-   '("~/Code/Platform161/TeamLead"
-     "~/Code/Platform161/TeamLead/Projects"
-     "~/Dropbox/OrgLife"))
+ '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(editorconfig vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app"))))
@@ -181,6 +178,11 @@
       (setq web-mode-enable-auto-pairing t))
       (setq web-mode-enable-current-element-highlight t))
 
+;; Read .editorconfig files
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 
 ;; Get haml mode
 (use-package haml-mode
@@ -235,9 +237,9 @@
   :config (progn
             (projectile-global-mode)
             (add-hook 'projectile-mode-hook 'projectile-rails-on)
-            (add-to-list 'projectile-globally-ignored-directories "log")
-            (add-to-list 'projectile-globally-ignored-directories "tmp")
-            (add-to-list 'projectile-globally-ignored-directories "dist")
+            (add-to-list 'projectile-globally-ignored-directories "*log")
+            (add-to-list 'projectile-globally-ignored-directories "*tmp")
+            (add-to-list 'projectile-globally-ignored-directories "*dist")
             (add-to-list 'projectile-globally-ignored-directories "public/raml/scripts")
             (add-to-list 'projectile-globally-ignored-directories "bundle")
             (add-to-list 'projectile-globally-ignored-directories "vcr_cassettes")
@@ -251,7 +253,7 @@
             (add-to-list 'projectile-globally-ignored-directories "export")
             (add-to-list 'projectile-globally-ignored-directories "docker/resources/sql")
             ;; Specific for Platform161's new UI project
-            (add-to-list 'projectile-globally-ignored-directories "node_modules")
+            (add-to-list 'projectile-globally-ignored-directories "*node_modules")
             (add-to-list 'projectile-globally-ignored-directories "docTypeScript")
             ;; Specific for Platform161's Jira Reports project
             (add-to-list 'projectile-globally-ignored-directories "output")
