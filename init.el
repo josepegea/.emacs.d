@@ -77,7 +77,7 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(sonic-pi restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(rspec-use-rvm t)
  '(safe-local-variable-values
    '((web-mode-markup-indent-offset . 4)
@@ -520,12 +520,16 @@
             (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)
             (display-line-numbers-mode -1)))
 
-
 ;; restclient
 (use-package restclient
   :ensure t
   :defer t)
 (add-to-list 'auto-mode-alist '("\\.restclient\\'" . restclient-mode))
+
+;; Dockerfile
+(add-to-list 'load-path "~/.emacs.d/vendor/dockerfile-mode.el")
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 
 ;; Start server
 (server-start)
