@@ -77,7 +77,8 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(sonic-pi restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+ '(rspec-use-rvm t)
  '(safe-local-variable-values
    '((web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app"))))
@@ -219,6 +220,7 @@
   '((emacs-lisp . true)
     (ruby . t)
     (shell . t)
+    (dot . t)
     (sql . t)
     (sqlite . t)))
 
@@ -242,6 +244,12 @@
           (setq markdown-command "multimarkdown")
           (setq markdown-max-image-size '(700 . 300)))
   )
+
+;; Graphviz dot mode
+(use-package graphviz-dot-mode
+  :ensure t
+  :config
+  (setq graphviz-dot-indent-width 4))
 
 (use-package projectile
   :ensure t
@@ -374,6 +382,14 @@
 ;; Proper highlighting of .arb files
 (add-to-list 'auto-mode-alist '("\\.arb\\'" . ruby-mode))
 
+;; minitest mode
+(use-package minitest
+  :ensure t
+  :defer t)
+
+;; RBS mode
+(use-package rbs-mode
+  :ensure t)
 
 ;; YAML mode
 (use-package yaml-mode
@@ -503,6 +519,13 @@
           (lambda ()
             (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)
             (display-line-numbers-mode -1)))
+
+
+;; restclient
+(use-package restclient
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("\\.restclient\\'" . restclient-mode))
 
 ;; Start server
 (server-start)
