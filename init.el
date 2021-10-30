@@ -77,8 +77,7 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode rvm magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
- '(rspec-use-rvm t)
+   '(jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app"))))
@@ -280,6 +279,11 @@
             (add-to-list 'projectile-globally-ignored-directories "docTypeScript")
             ;; Specific for Platform161's Jira Reports project
             (add-to-list 'projectile-globally-ignored-directories "output")
+
+            ;; Specific for Lingokids' project
+            (add-to-list 'projectile-globally-ignored-file-suffixes "tsbuildinfo")
+            (add-to-list 'projectile-globally-ignored-files "build.gradle")
+
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
             (add-to-list 'projectile-globally-ignored-directories "javascripts/oat"))
@@ -354,15 +358,11 @@
 ;; Make other window default copy target in dired
 (setq dired-dwim-target t)
 
-;; RVM
-(use-package rvm
+;; RBEnv
+(use-package rbenv
   :ensure t
-  :defer t
-  :config (rvm-use-default))
+  :defer t)
 
-;; Set the correct Ruby when changing files
-(add-hook 'ruby-mode-hook
-          (lambda () (rvm-activate-corresponding-ruby)))
 
 ;; Needed for RSpec below
 (use-package inf-ruby
@@ -381,6 +381,12 @@
 
 ;; Proper highlighting of .arb files
 (add-to-list 'auto-mode-alist '("\\.arb\\'" . ruby-mode))
+
+;; Proper highlighting of .env and .envrc files
+(add-to-list 'auto-mode-alist '("\\.envrc\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\.\\(development\\|test\\|production\\|local\\)\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\.\\(development\\|test\\|production\\|local\\).\\(development\\|test\\|production\\)\\'" . sh-mode))
 
 ;; minitest mode
 (use-package minitest
@@ -462,6 +468,15 @@
 (add-hook 'web-mode-hook
   (lambda () (global-set-key (kbd "M-s-y") 'jes-ng2-alternate)))
 
+;; TSX support
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; enable typescript-tslint checker
+;; (flycheck-add-mode 'typescript-tslint 'web-mode)
+
 ;; Groovy
 (use-package groovy-mode
   :ensure t
@@ -525,6 +540,23 @@
   :ensure t
   :defer t)
 (add-to-list 'auto-mode-alist '("\\.restclient\\'" . restclient-mode))
+
+;; restclient-jq provides useful functions, like jq-set-var
+;; restclient-jq is not included in the Melpa package. This seems to be a bug
+;; But the code in restclient tries to load it, if present
+;; So, to make it work until it's fixed, we just downloaded the file manually from GitHub
+;; And added it to the load-path
+;;
+;; One last caveat: It only works after loading jq-mode, so you need to manually
+;; enable jq-mode in a buffer before the first time you need jq-set-var to work
+(add-to-list 'load-path "~/.emacs.d/vendor/restclient-jq.el")
+
+;; jq-mode
+(use-package jq-mode
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode))
+
 
 ;; Dockerfile
 (add-to-list 'load-path "~/.emacs.d/vendor/dockerfile-mode.el")

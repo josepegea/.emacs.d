@@ -5,15 +5,31 @@
       '(
         cua-exchange-point-and-mark
         cua-paste
+        dired-toggle-read-only
+        electric-newline-and-maybe-indent
+        emkm-spanish-4
+        emkm-spanish-5
+        emkm-spanish-6
+        emkm-spanish-9
+        indent-rigidly
+        indent-rigidly-left
+        markdown-electric-backquote
         ns-prev-frame
         org-force-self-insert
         org-self-insert-command
         other-frame
+        previous-buffer
+        tab-complete
+        wdired-next-line
+        yas-expand
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        beginning-of-buffer
+        ido-dired
         mark-whole-buffer
+        mouse-set-region
         nonincremental-search-forward
         ns-copy-including-secondary
         ))
