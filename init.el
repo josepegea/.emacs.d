@@ -77,10 +77,12 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
-   '((web-mode-markup-indent-offset . 4)
-     (rspec-spec-command . "rspec -Ispec/app"))))
+   '((eval prettier-mode t)
+     (web-mode-markup-indent-offset . 4)
+     (rspec-spec-command . "rspec -Ispec/app")))
+ '(warning-suppress-types '((comp) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -156,6 +158,12 @@
 ;; Emacs native line numbers
 (global-display-line-numbers-mode t)
 
+;; Show column number
+(column-number-mode t)
+
+;; Auto revert mode
+(global-auto-revert-mode t)
+
 ;; Undo
 (use-package undo-tree
   :ensure t
@@ -221,6 +229,7 @@
     (shell . t)
     (dot . t)
     (sql . t)
+    (gnuplot . t)
     (sqlite . t)))
 
 ;; Org-reveal
@@ -250,6 +259,12 @@
   :config
   (setq graphviz-dot-indent-width 4))
 
+;; GNUplot mode
+(use-package gnuplot
+  :ensure t)
+
+(add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
+
 (use-package projectile
   :ensure t
   :diminish projectile-mode "Ⓟ"
@@ -265,11 +280,20 @@
             (add-to-list 'projectile-globally-ignored-directories "public/raml/scripts")
             (add-to-list 'projectile-globally-ignored-directories "bundle")
             (add-to-list 'projectile-globally-ignored-directories "vcr_cassettes")
+            (add-to-list 'projectile-globally-ignored-directories "coverage")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".full.js")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".min.js")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".min.css")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".raw")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".vdi")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".png")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".mp4")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".enc")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".otf")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".xls")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".xlsx")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".doc")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".docx")
             ;; Specific for Platform161 project
             (add-to-list 'projectile-globally-ignored-directories "import")
             (add-to-list 'projectile-globally-ignored-directories "export")
@@ -283,6 +307,14 @@
             ;; Specific for Lingokids' project
             (add-to-list 'projectile-globally-ignored-file-suffixes "tsbuildinfo")
             (add-to-list 'projectile-globally-ignored-files "build.gradle")
+
+            ;; Specific for Marketer' project
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".svg")
+            (add-to-list 'projectile-globally-ignored-file-suffixes ".po")
+            (add-to-list 'projectile-globally-ignored-directories "app/views/banners")
+            (add-to-list 'projectile-globally-ignored-directories "spec/fixtures/vcr_cassettes")
+            (add-to-list 'projectile-globally-ignored-directories "storage")
+            (add-to-list 'projectile-globally-ignored-directories "build")
 
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
@@ -379,6 +411,20 @@
 
 (add-hook 'after-init-hook 'inf-ruby-switch-setup)
 
+;; Rubocop mode
+(use-package rubocop
+  :ensure t
+  :defer t
+  :config (progn
+            (add-hook 'ruby-mode-hook 'rubocop-mode)
+            (setq rubocop-check-command "rubocop --parallel --format emacs")))
+
+;; ;; Rubocop mode
+;; (use-package rubocop
+;;   :ensure t
+;;   :defer t
+;;   :config (add-hook 'ruby-mode-hook 'rubocop-mode))
+
 ;; Proper highlighting of .arb files
 (add-to-list 'auto-mode-alist '("\\.arb\\'" . ruby-mode))
 
@@ -429,6 +475,11 @@
 
 ;; Typescript
 
+;; Plain .ts support
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(add-hook 'typescript-mode-hook
+  (lambda () (setq-default typescript-indent-level 2)))
+
 (use-package tide
   :ensure t
   :defer t)
@@ -445,8 +496,10 @@
   ;; company is an optional dependency. You have to
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
-  (company-mode +1)
-  )
+  ;; (company-mode +1)
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+  (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
+  (flycheck-add-next-checker 'tsx-tide 'typescript-tslint))
 
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
@@ -455,6 +508,17 @@
 ;; (add-hook 'before-save-hook 'tide-format-before-save)
 
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
+(add-hook 'web-mode-hook #'setup-tide-mode)
+
+;; Jest
+(use-package jest
+  :ensure t
+  :defer t
+  :after (web-mode)
+  :hook (web-mode . jest-minor-mode)
+  :bind (("C-c , m" . 'jest-file)
+         ("C-c , s" . 'jest-function)
+         ("C-c , p" . 'jest)))
 
 ;; Karma
 (use-package karma
@@ -474,8 +538,15 @@
           (lambda ()
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-;; enable typescript-tslint checker
+;; ;; enable typescript-tslint checker
 ;; (flycheck-add-mode 'typescript-tslint 'web-mode)
+
+;; (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
+;; (flycheck-add-next-checker 'tsx-tide 'typescript-tslint)
+
+;; enable eslint checker
+;;(flycheck-add-mode 'javascript-eslint 'web-mode)
+
 
 ;; Groovy
 (use-package groovy-mode
@@ -490,7 +561,9 @@
 (use-package multiple-cursors
   :ensure t
   :bind (("C-s-M-g" . 'mc/mark-next-like-this)
-         ("C-s-M-S-g" . 'mc/mark-previous-like-this)))
+         ("C-s-M-S-g" . 'mc/unmark-next-like-this)
+         ("C-s-M-s" . 'mc/skip-to-next-like-this)
+         ("C-s-M-a" . 'mc/mark-all-like-this)))
 
 ;; Folding of XML
 ;; See https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
@@ -562,6 +635,62 @@
 (add-to-list 'load-path "~/.emacs.d/vendor/dockerfile-mode.el")
 (require 'dockerfile-mode)
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+
+;; Terraform
+(use-package terraform-mode
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode))
+
+;; OpenStreetMaps
+(use-package osm
+  :bind (("C-c m h" . osm-home)
+         ("C-c m s" . osm-search)
+         ("C-c m v" . osm-server)
+         ("C-c m t" . osm-goto)
+         ("C-c m x" . osm-gpx-show)
+         ("C-c m j" . osm-bookmark-jump))
+
+  :custom
+  ;; Take a look at the customization group `osm' for more options.
+  (osm-server 'default) ;; Configure the tile server
+  (osm-copyright t))     ;; Display the copyright information
+
+;; Prettier (facepalm!)
+(use-package prettier
+  :ensure t
+  :defer t)
+
+;; Use it only for Marketer JS projects
+(dir-locals-set-class-variables 'prettier-js
+                                '((typescript-mode . ((eval . (prettier-mode t))))
+                                  (web-mode . ((eval . (prettier-mode t))))))
+
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/marketer-frontend" 'prettier-js)
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/ui-library" 'prettier-js)
+
+
+
+;; CSV mode
+(use-package csv-mode
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("\\.csv\\'" . csv-mode))
+
+;; browse-at-remote
+(use-package browse-at-remote
+  :ensure t
+  :init
+    (progn (global-set-key (kbd "C-c g g") 'browse-at-remote)))
+
+
+;; Sonic Pi
+
+(defun sonic-pi-play ()
+  (interactive)
+  (shell-command "sendkeys -a 'Sonic Pi' -c '<c:r:command>'"))
+
+(global-set-key (kbd "C-c C-p") 'sonic-pi-play)
 
 ;; Start server
 (server-start)
