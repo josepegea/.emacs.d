@@ -77,7 +77,7 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((eval prettier-mode t)
      (web-mode-markup-indent-offset . 4)
@@ -184,6 +184,7 @@
          ("\\.html\\.erb\\'" . web-mode)
          ("\\.erb\\'" . web-mode)
          ("\\.rhtml\\'" . web-mode)
+         ("\\.mjml\\'" . web-mode)
          ("\\.jsx\\'" . web-mode))
   :config
     (progn
@@ -311,10 +312,18 @@
             ;; Specific for Marketer' project
             (add-to-list 'projectile-globally-ignored-file-suffixes ".svg")
             (add-to-list 'projectile-globally-ignored-file-suffixes ".po")
+            (add-to-list 'projectile-globally-ignored-files "*map.js")
             (add-to-list 'projectile-globally-ignored-directories "app/views/banners")
             (add-to-list 'projectile-globally-ignored-directories "spec/fixtures/vcr_cassettes")
             (add-to-list 'projectile-globally-ignored-directories "storage")
             (add-to-list 'projectile-globally-ignored-directories "build")
+            (add-to-list 'projectile-globally-ignored-directories "src/locales")
+            (add-to-list 'projectile-globally-ignored-directories "public/packs")
+            (add-to-list 'projectile-globally-ignored-directories "public/packs-test")
+            (add-to-list 'projectile-globally-ignored-directories "public/uploads")
+
+            ;; Specific for Buvagenda' project
+            (add-to-list 'projectile-globally-ignored-directories "app/assets/builds")
 
             ;; Specific for Evadium project
             (add-to-list 'projectile-globally-ignored-files "*full.js")
@@ -342,6 +351,10 @@
   :config (progn
             (ido-vertical-mode 1)
             (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)))
+
+;; ruby-test-mode
+(use-package ruby-test-mode
+  :ensure t)
 
 ;; Delete grep headers
 (add-to-list 'load-path "~/.emacs.d/vendor")
@@ -668,6 +681,8 @@
 
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/marketer-frontend" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/ui-library" 'prettier-js)
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/standalone-checkout" 'prettier-js)
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/iframe-modules-wrapper" 'prettier-js)
 
 
 
@@ -683,6 +698,10 @@
   :init
     (progn (global-set-key (kbd "C-c g g") 'browse-at-remote)))
 
+;; vdiff
+(use-package vdiff
+  :ensure t)
+
 
 ;; Sonic Pi
 
@@ -692,7 +711,29 @@
 
 (global-set-key (kbd "C-c C-p") 'sonic-pi-play)
 
+;; Decent maximization
+(setq frame-resize-pixelwise t)
+
+;; ChatGPT
+(setq gptel-default-mode 'org-mode)
+(setq gptel-prompt-string "* ")
+
+(use-package gptel
+  :ensure t
+  :init
+    (progn (global-set-key (kbd "C-c g p t") 'gptel)))
+
+(require 'macos-keychain)
+
+(setq gptel-api-key (get-password-from-keychain "openai-api-key"))
+
+;; Random keybindings
+(global-set-key (kbd "C-c j") 'json-pretty-print)
+
 ;; Start server
 (server-start)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+;; Control vertical window splitting
+(setq split-height-threshold nil)
