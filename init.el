@@ -77,7 +77,7 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(robe tree-sitter-langs gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((eval prettier-mode t)
      (web-mode-markup-indent-offset . 4)
@@ -737,3 +737,17 @@
 
 ;; Control vertical window splitting
 (setq split-height-threshold nil)
+
+;; For tree-sitter in Emacs 29
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
+
+;; Robe
+(use-package robe
+  :ensure t)
+
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'ruby-ts-mode-hook 'robe-mode)
+
+(defun ruby-mode-variables () nil)
