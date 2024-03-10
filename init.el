@@ -74,6 +74,7 @@
  ;; If there is more than one, they won't work right.
  '(coffee-tab-width 2)
  '(custom-enabled-themes '(wombat))
+ '(debug-on-error nil)
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
@@ -172,10 +173,10 @@
     (progn
       (global-undo-tree-mode 1)
       (defalias 'redo 'undo-tree-redo)
+      (setq undo-tree-auto-save-history nil)
 
       (global-set-key (kbd "s-z") 'undo)
       (global-set-key (kbd "s-Z") 'redo)))
-
 
 ;; web-mode, for mixed HTML files
 (use-package web-mode
@@ -489,7 +490,7 @@
 ;; Typescript
 
 ;; Plain .ts support
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . web-mode))
 (add-hook 'typescript-mode-hook
   (lambda () (setq-default typescript-indent-level 2)))
 
@@ -683,6 +684,7 @@
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/ui-library" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/standalone-checkout" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/iframe-modules-wrapper" 'prettier-js)
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/property-picker" 'prettier-js)
 
 
 
@@ -727,6 +729,12 @@
 
 (setq gptel-api-key (get-password-from-keychain "openai-api-key"))
 
+(defun set-gptel-buffer-settings ()
+  "Set buffer settings for GPTel buffers."
+  (setq-local truncate-lines nil) ; Disable line truncation
+  (setq-local word-wrap t)        ; Enable word wrapping
+  (setq-local wrap-prefix nil))   ; Wrap at window edge
+
 ;; Random keybindings
 (global-set-key (kbd "C-c j") 'json-pretty-print)
 
@@ -751,3 +759,7 @@
 (add-hook 'ruby-ts-mode-hook 'robe-mode)
 
 (defun ruby-mode-variables () nil)
+
+;; (require 'ruby-copy-namespaced-class-name)
+;; (global-set-key (kbd "C-c M-c") 'ruby-copy-namespaced-class-name)
+
