@@ -12,7 +12,8 @@
 (cond
  ((string-equal system-type "gnu/linux")
   (progn
-    (require 'command-keys-for-linux))))
+    (require 'command-keys-for-linux)
+    (require 'refresh-global-menu-bar))))
 
 ;; Basic macOS keys
 (global-set-key [s-M-left] 'previous-buffer)
@@ -73,12 +74,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(coffee-tab-width 2)
+ '(cua-normal-cursor-color "#656565")
+ '(cursor-type '(bar . 2))
  '(custom-enabled-themes '(wombat))
+ '(custom-safe-themes
+   '("77f1e155387d355fbbb3b382a28da41cc709b2a1cc71e7ede03ee5c1859468d2" default))
  '(debug-on-error nil)
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(robe tree-sitter-langs gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(kuronami-theme robe tree-sitter-langs gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
  '(safe-local-variable-values
    '((eval prettier-mode t)
      (web-mode-markup-indent-offset . 4)
@@ -89,6 +94,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#181a26" :foreground "#c9c9c9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 110 :width normal :foundry "JB" :family "JetBrains Mono"))))
+ '(cursor ((t (:background "white smoke"))))
  '(vterm-color-blue ((t (:foreground "SlateBlue1")))))
 
 
@@ -725,9 +732,15 @@
   :init
     (progn (global-set-key (kbd "C-c g p t") 'gptel)))
 
-(require 'macos-keychain)
+(cond
+ ((string-equal system-type "gnu/linux")
+  (progn
+    (require 'gptel-key-linux))))
 
-(setq gptel-api-key (get-password-from-keychain "openai-api-key"))
+(cond
+ ((string-equal system-type "darwin")
+  (progn
+    (require 'gptel-key-macos))))
 
 (defun set-gptel-buffer-settings ()
   "Set buffer settings for GPTel buffers."
@@ -762,4 +775,3 @@
 
 ;; (require 'ruby-copy-namespaced-class-name)
 ;; (global-set-key (kbd "C-c M-c") 'ruby-copy-namespaced-class-name)
-

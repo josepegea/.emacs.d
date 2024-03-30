@@ -12,4 +12,8 @@
 
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 
+(global-set-key (kbd "s-t") 'projectile-switch-to-buffer)
+(global-set-key (kbd "s-k") 'kill-current-buffer)
+(global-set-key (kbd "s-l") 'goto-line)
+
 (provide 'command-keys-for-linux)
