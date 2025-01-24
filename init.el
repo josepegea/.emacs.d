@@ -73,6 +73,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-source-save-behavior nil)
  '(coffee-tab-width 2)
  '(cua-normal-cursor-color "#656565")
  '(cursor-type '(bar . 2))
@@ -83,11 +84,17 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(kuronami-theme robe tree-sitter-langs gptel vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(prettier-rc pgmacs pg vc-use-package bundler adoc-mode gptel kuronami-theme robe tree-sitter-langs vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+ '(package-vc-selected-packages
+   '((aider :vc-backend Git :url "https://github.com/tninja/aider.el")
+     (pgmacs :vc-backend Git :url "https://github.com/emarsden/pgmacs")
+     (pg :vc-backend Git :url "https://github.com/emarsden/pg-el")
+     (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
  '(safe-local-variable-values
-   '((eval prettier-mode t)
+   '((eval prettier-rc-mode t)
      (web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app")))
+ '(vc-handled-backends '(RCS CVS SVN SCCS SRC Bzr Hg))
  '(warning-suppress-types '((comp) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -241,6 +248,10 @@
     (gnuplot . t)
     (sqlite . t)))
 
+(setq org-confirm-babel-evaluate
+      (lambda (lang body)
+        (not (string= lang "sqlite"))))
+
 ;; Org-reveal
 (use-package ox-reveal
   :ensure t
@@ -329,6 +340,9 @@
             (add-to-list 'projectile-globally-ignored-directories "public/packs")
             (add-to-list 'projectile-globally-ignored-directories "public/packs-test")
             (add-to-list 'projectile-globally-ignored-directories "public/uploads")
+
+            ;; Specific for SmartSale' project
+            (add-to-list 'projectile-globally-ignored-directories ".next")
 
             ;; Specific for Buvagenda' project
             (add-to-list 'projectile-globally-ignored-directories "app/assets/builds")
@@ -505,8 +519,6 @@
   :ensure t
   :defer t)
 
-(setq exec-path (append exec-path '("/Users/jes/.nvm/versions/node/v9.2.0/bin")))
-
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -627,6 +639,7 @@
 (add-hook 'vterm-mode-hook
           (lambda ()
             (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)
+            (define-key vterm-mode-map (kbd "s-<return>") 'vterm-copy-mode)
             (display-line-numbers-mode -1)))
 
 ;; restclient
@@ -677,22 +690,44 @@
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t))     ;; Display the copyright information
 
-;; Prettier (facepalm!)
-(use-package prettier
+;; Prettier
+;; Replaced prettier.el with prettier-rc.el
+;; because the first one stopped honoring
+;; local config for projects
+(use-package prettier-rc
   :ensure t
   :defer t)
 
 ;; Use it only for Marketer JS projects
 (dir-locals-set-class-variables 'prettier-js
-                                '((typescript-mode . ((eval . (prettier-mode t))))
-                                  (web-mode . ((eval . (prettier-mode t))))))
-
+                                '((typescript-mode . ((eval . (prettier-rc-mode t))))
+                                  (web-mode . ((eval . (prettier-rc-mode t))))))
+;; For macOS
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/marketer-frontend" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/ui-library" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/standalone-checkout" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/iframe-modules-wrapper" 'prettier-js)
 (dir-locals-set-directory-class "/Users/jes/Code/Marketer/property-picker" 'prettier-js)
+;; For Linux
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/marketer-frontend" 'prettier-js)
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/ui-library" 'prettier-js)
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/standalone-checkout" 'prettier-js)
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/iframe-modules-wrapper" 'prettier-js)
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/property-picker" 'prettier-js)
 
+
+
+;; Configure a different rspec command for marketer project
+
+;; If we don't do that Emacs warns for every file loaded in one of those dires
+(put 'rspec-spec-command 'safe-local-variable #'stringp)
+
+(dir-locals-set-class-variables 'marketer-backend
+                                '((nil . ((rspec-spec-command . "bin/rspec")))))
+;; For macOS
+(dir-locals-set-directory-class "/Users/jes/Code/Marketer/marketer" 'marketer-backend)
+;; For Linux
+(dir-locals-set-directory-class "/home/jes/Code/Marketer/marketer" 'marketer-backend)
 
 
 ;; CSV mode
@@ -726,11 +761,22 @@
 ;; ChatGPT
 (setq gptel-default-mode 'org-mode)
 (setq gptel-prompt-string "* ")
+(setq gptel-model "gpt-4-turbo")
+(setq gptel-expert-commands t)
 
 (use-package gptel
   :ensure t
+  :pin melpa
   :init
-    (progn (global-set-key (kbd "C-c g p t") 'gptel)))
+    (progn
+      (global-set-key (kbd "C-c g p t") 'gptel)
+      (global-set-key (kbd "C-c g p s") 'gptel-send)))
+
+(gptel-make-openai "llamafile"          ;Any name
+  :stream t                             ;Stream responses
+  :protocol "http"
+  :host "localhost:8080"                ;Llama.cpp server location
+  :models '("mixtral"))                    ;Any names, doesn't matter for Llama
 
 (cond
  ((string-equal system-type "gnu/linux")
@@ -775,3 +821,14 @@
 
 ;; (require 'ruby-copy-namespaced-class-name)
 ;; (global-set-key (kbd "C-c M-c") 'ruby-copy-namespaced-class-name)
+
+;; AsciiDoc mode
+(use-package adoc-mode
+  :ensure t
+  :defer t)
+(add-to-list 'auto-mode-alist '("\\.adoc\\'" . adoc-mode))
+
+;; Bundler utils
+(use-package bundler
+  :ensure t
+  :defer t)
