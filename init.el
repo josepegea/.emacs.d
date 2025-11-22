@@ -79,20 +79,34 @@
  '(cursor-type '(bar . 2))
  '(custom-enabled-themes '(wombat))
  '(custom-safe-themes
-   '("77f1e155387d355fbbb3b382a28da41cc709b2a1cc71e7ede03ee5c1859468d2" default))
+   '("77f1e155387d355fbbb3b382a28da41cc709b2a1cc71e7ede03ee5c1859468d2"
+     default))
  '(debug-on-error nil)
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(prettier-rc pgmacs pg vc-use-package bundler adoc-mode gptel kuronami-theme robe tree-sitter-langs vdiff ruby-test-mode browse-at-remote csv-mode prettier jest osm gnuplot rubocop terraform-mode jq-mode rbenv sonic-pi dockerfile-mode restclient rbs-mode graphviz-dot-mode minitest minitest-mode editorconfig htmlize slim-mode vterm groovy-mode crontab-mode yasnippet-snippets yasnippet tide markdown-mode ox-reveal yaml-mode inf-ruby auto-dim-other-buffers auto-dim-other-buffers-mode undo-tree multiple-cursors rspec-mode magit ido-vertical-mode flx-ido projectile coffee-mode js2-mode haml-mode web-mode exec-path-from-shell use-package))
+   '(adoc-mode aider auto-dim-other-buffers browse-at-remote bundler
+               coffee-mode company consult csv-mode dirvish eglot
+               embark embark-consult exec-path-from-shell flx-ido
+               gnuplot gptel graphviz-dot-mode groovy-mode haml-mode
+               htmlize ido-vertical-mode jest jq-mode kuronami-theme
+               marginalia minitest multiple-cursors orderless
+               ox-reveal peg pg pgmacs prettier prettier-rc rbenv
+               rbs-mode restclient robe rspec-mode rubocop
+               ruby-test-mode slim-mode terraform-mode tide
+               tree-sitter-langs undo-tree vc-use-package vdiff
+               vertico vterm web-mode yaml-mode yasnippet-snippets))
  '(package-vc-selected-packages
-   '((aider :vc-backend Git :url "https://github.com/tninja/aider.el")
-     (pgmacs :vc-backend Git :url "https://github.com/emarsden/pgmacs")
+   '((pgmacs :vc-backend Git :url "https://github.com/emarsden/pgmacs")
      (pg :vc-backend Git :url "https://github.com/emarsden/pg-el")
-     (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
+     (vc-use-package :vc-backend Git :url
+                     "https://github.com/slotThe/vc-use-package")))
+ '(prettier-rc-use-editorconfig nil)
+ '(prettier-rc-use-node-modules-bin t)
+ '(prettier-rc-use-package-json nil)
+ '(safe-local-variable-directories '("/home/jes/Code/Marketer/marketer-frontend/"))
  '(safe-local-variable-values
-   '((eval prettier-rc-mode t)
-     (web-mode-markup-indent-offset . 4)
+   '((eval prettier-rc-mode t) (web-mode-markup-indent-offset . 4)
      (rspec-spec-command . "rspec -Ispec/app")))
  '(vc-handled-backends '(RCS CVS SVN SCCS SRC Bzr Hg))
  '(warning-suppress-types '((comp) (comp))))
@@ -101,8 +115,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#181a26" :foreground "#c9c9c9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 110 :width normal :foundry "JB" :family "JetBrains Mono"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#181a26" :foreground "#c9c9c9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 103 :width normal :foundry "JB" :family "JetBrains Mono"))))
  '(cursor ((t (:background "white smoke"))))
+ '(dirvish-hl-line ((t (:inherit highlight :extend t))))
  '(vterm-color-blue ((t (:foreground "SlateBlue1")))))
 
 
@@ -206,8 +221,9 @@
       (setq web-mode-markup-indent-offset 2)
       (setq web-mode-css-indent-offset 2)
       (setq web-mode-code-indent-offset 2)
-      (setq web-mode-enable-auto-pairing t))
-      (setq web-mode-enable-current-element-highlight t))
+      (setq web-mode-enable-auto-pairing t)
+      (setq web-mode-enable-current-element-highlight t)
+      (setq web-mode-enable-auto-indentation nil)))
 
 ;; Read .editorconfig files
 (use-package editorconfig
@@ -392,7 +408,9 @@
 ;; Command-T -> Select from recent files in the project
 ;; As it is assigned to Textmate's "goto file" command, global-set-key doesn't work and we have to use define-key with remap
 ;; See https://www.masteringemacs.org/article/mastering-key-bindings-emacs
-(define-key (current-global-map) [remap textmate-goto-file] 'projectile-switch-to-buffer)
+;; (define-key (current-global-map) [remap textmate-goto-file] 'projectile-switch-to-buffer)
+;; Not anymore. Now we use consult
+(define-key (current-global-map) [remap textmate-goto-file] 'consult-project-buffer)
 
 ;; Ctrl-Command-T -> Select file in project (used when the file isn't already in a buffer)
 (global-set-key (kbd "C-s-t") 'projectile-find-file)
@@ -413,14 +431,16 @@
 ;; Intelligent tab complete
 (require 'tab-complete)
 
-;; Open files in dired mode using 'open'
-;; See http://jblevins.org/log/dired-open
-(eval-after-load "dired"
-  '(progn
-     (define-key dired-mode-map (kbd "z")
-       (lambda () (interactive)
-         (let ((fn (dired-get-file-for-visit)))
-           (start-process "default-app" nil "open" fn))))))
+;; Open files in dired mode
+
+(cond
+ ((string-equal system-type "gnu/linux")
+  (progn
+    (require 'linux-open))))
+(cond
+ ((string-equal system-type "darwin")
+  (progn
+    (require 'macos-open))))
 
 ;; Make other window default copy target in dired
 (setq dired-dwim-target t)
@@ -508,6 +528,12 @@
 (global-set-key (kbd "C-c s") 'hs-show-block)
 (global-set-key (kbd "s-y") 'hs-toggle-hiding)
 
+;; company-mode
+(use-package company
+  :ensure t
+  :defer t)
+
+
 ;; Typescript
 
 ;; Plain .ts support
@@ -529,7 +555,7 @@
   ;; company is an optional dependency. You have to
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
-  ;; (company-mode +1)
+  (company-mode +1)
   (flycheck-add-mode 'typescript-tslint 'web-mode)
   (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
   (flycheck-add-next-checker 'tsx-tide 'typescript-tslint))
@@ -636,11 +662,26 @@
 (use-package vterm
   :ensure t)
 
+(setq vterm-max-scrollback 100000)
+
 (add-hook 'vterm-mode-hook
           (lambda ()
             (define-key vterm-mode-map (kbd "s-v") 'vterm-yank)
             (define-key vterm-mode-map (kbd "s-<return>") 'vterm-copy-mode)
             (display-line-numbers-mode -1)))
+
+;; Useful for copy-mode in vterm while running Claude Code
+
+(defvar my/vterm-cursor-type-backup nil)
+
+(add-hook 'vterm-copy-mode-hook
+          (lambda ()
+            (setq my/vterm-cursor-type-backup cursor-type)
+            (setq cursor-type 'box)))
+
+(add-hook 'vterm-copy-mode-exit-hook
+          (lambda ()
+            (setq cursor-type my/vterm-cursor-type-backup)))
 
 ;; restclient
 (use-package restclient
@@ -761,7 +802,7 @@
 ;; ChatGPT
 (setq gptel-default-mode 'org-mode)
 (setq gptel-prompt-string "* ")
-(setq gptel-model "gpt-4-turbo")
+(setq gptel-model 'gpt-4.1)
 (setq gptel-expert-commands t)
 
 (use-package gptel
@@ -788,11 +829,16 @@
   (progn
     (require 'gptel-key-macos))))
 
-(defun set-gptel-buffer-settings ()
-  "Set buffer settings for GPTel buffers."
-  (setq-local truncate-lines nil) ; Disable line truncation
-  (setq-local word-wrap t)        ; Enable word wrapping
-  (setq-local wrap-prefix nil))   ; Wrap at window edge
+(add-hook 'gptel-mode-hook
+          (lambda ()
+            (run-at-time
+             "0.1 sec" nil
+             (lambda ()
+               (when (derived-mode-p 'org-mode)
+                 (auto-fill-mode -1)
+                 (visual-line-mode 1)
+                 (when (fboundp 'visual-wrap-prefix-mode)
+                   (visual-wrap-prefix-mode 1)))))))
 
 ;; Random keybindings
 (global-set-key (kbd "C-c j") 'json-pretty-print)
@@ -804,20 +850,16 @@
 
 ;; Control vertical window splitting
 (setq split-height-threshold nil)
+(setq split-width-threshold 170)
 
 ;; For tree-sitter in Emacs 29
 (use-package tree-sitter-langs
   :ensure t
   :after tree-sitter)
 
-;; Robe
-(use-package robe
-  :ensure t)
-
-(add-hook 'ruby-mode-hook 'robe-mode)
-(add-hook 'ruby-ts-mode-hook 'robe-mode)
-
-(defun ruby-mode-variables () nil)
+; Use eglot for Ruby
+;; (add-hook 'ruby-mode-hook 'eglot)
+;; (add-hook 'ruby-ts-mode-hook 'eglot)
 
 ;; (require 'ruby-copy-namespaced-class-name)
 ;; (global-set-key (kbd "C-c M-c") 'ruby-copy-namespaced-class-name)
@@ -832,3 +874,387 @@
 (use-package bundler
   :ensure t
   :defer t)
+
+;; Copilot
+
+;; Copilot Dependencies
+(use-package dash
+  :ensure t
+  :defer t)
+
+;; Copilot package
+(add-to-list 'load-path "/home/jes/.emacs.d/vendor/copilot/copilot.el")
+(require 'copilot)
+
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
+
+;; PGemacs
+(use-package pg
+  :vc (:fetcher github :repo emarsden/pg-el))
+
+(use-package pgmacs
+  :vc (:fetcher github :repo emarsden/pgmacs))
+
+;; ;; aider.el
+;; (use-package aider
+;;   :vc (:fetcher github :repo "tninja/aider.el")
+;;   ;; :straight (:host github :repo "tninja/aider.el" :files ("aider.el"))
+;;   :config
+;;   ;; Use claude-3-5-sonnet cause it is best in aider benchmark
+;;   (setq aider-args '("--model" "gpt-4o-mini"))
+;;   (setenv "OPENAI_API_KEY" gptel-key-linux)
+;;   (global-set-key (kbd "C-c a") 'aider-transient-menu))
+
+;; Copied from rafadc :-D
+;; Paste images into org-mode docs
+
+(defun org-image-from-clipboard ()
+  "Takes a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (org-display-inline-images)
+  (let ((filename (concat
+                  (make-temp-name
+                   (concat (file-name-nondirectory (buffer-file-name)) "_imgs/" (format-time-string "%Y%m%d_%H%M%S_")) ) ".png")))
+    (unless (file-exists-p (file-name-directory filename))
+      (make-directory (file-name-directory filename)))
+    (call-process "pasteimg" nil nil nil filename)
+    (if (file-exists-p filename)
+        (insert (concat "[[file:" filename "]]")))
+    (org-display-inline-images)))
+
+(use-package aider
+  :config
+  ;; For latest claude sonnet model
+  (setq aider-args '("--model" "gpt-4.1" "--no-auto-commits" "--no-auto-accept-architect"))
+  (setenv "OPENAI_API_KEY" gptel-api-key)
+  ;; Or gemini model
+  ;; (setq aider-args '("--model" "gemini"))
+  ;; (setenv "GEMINI_API_KEY" <your-gemini-api-key>)
+  ;; Or chatgpt model
+  ;; (setq aider-args '("--model" "o4-mini"))
+  ;; (setenv "OPENAI_API_KEY" <your-openai-api-key>)
+  ;; Or use your personal config file
+  ;; (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
+  ;; ;;
+  ;; Optional: Set a key binding for the transient menu
+  (global-set-key (kbd "C-c a") 'aider-transient-menu)) ;; for wider screen
+  ;; or use aider-transient-menu-2cols / aider-transient-menu-1col, for narrow screen
+
+;; Use vterm for certain RSpec compilations
+;; Use [C-u C-c , s] to execute the spec under current line on an vterm buffer
+;; Kindly generated by ChatGPT after a long trying session
+
+(defun my/project-root ()
+  "Get project root for Rails/RSpec."
+  (or (locate-dominating-file default-directory "spec")
+      (locate-dominating-file default-directory ".git")
+      default-directory))
+
+(defun my/rspec-current-example-command ()
+  "Build RSpec command for current example."
+  (let* ((file (buffer-file-name))
+         (line (line-number-at-pos))
+         (root (my/project-root))
+         (relpath (if (and root file)
+                      (file-relative-name file root)
+                    file)))
+    (format "bundle exec rspec %s:%d" relpath line)))
+
+(defun my/rspec-run-in-vterm (cmd)
+  "Run CMD in a vterm buffer in the project root."
+  (let* ((default-directory (my/project-root))
+         (buffer-name "*RSpec-vterm*")
+         (buf (get-buffer buffer-name)))
+    (pop-to-buffer (or buf (vterm-other-window buffer-name)))
+    (goto-char (point-max))
+    (vterm-send-string cmd)
+    (vterm-send-return)))
+
+(defun my/rspec-runner (orig-fun &rest args)
+  (if current-prefix-arg
+      (let ((cmd (my/rspec-current-example-command)))
+        (message "Sending to vterm: %S" cmd)
+        (my/rspec-run-in-vterm cmd))
+    (apply orig-fun args)))
+
+(advice-add 'rspec-verify-single :around #'my/rspec-runner)
+
+; Rails Web Components Toggle
+(require 'rails-component-toggle)
+
+; vterms per project
+(require 'jes-project-vterm)
+
+;; Dired and dirvish
+;; See https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#sample-config
+
+(use-package dired
+  :config
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
+  ;; this command is useful when you want to close the window of `dirvish-side'
+  ;; automatically when opening a file
+  (put 'dired-find-alternate-file 'disabled nil))
+
+(use-package dirvish
+  :ensure t
+  :init
+  (dirvish-override-dired-mode)
+  :custom
+  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+   '(("h" "~/"                          "Home")
+     ("d" "~/Downloads/"                "Downloads")
+     ("c" "~/Code/"                     "Code")
+     ("s" "~/Stuff/"                    "Stuff")))
+  :config
+  ;; (dirvish-peek-mode)             ; Preview files in minibuffer
+  ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
+  (setq dirvish-mode-line-format
+        '(:left (sort symlink) :right (omit yank index)))
+  (setq dirvish-attributes           ; The order *MATTERS* for some attributes
+        '(collapse file-modes file-time file-size)
+        dirvish-side-attributes
+        '(collapse file-size))
+  ;; open large directory (over 20000 files) asynchronously with `fd' command
+  (setq dirvish-large-directory-threshold 20000)
+  :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+  (("C-c f" . dirvish)
+   :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
+   ("M-<up>" . dired-up-directory)        ; So you can adjust `dired' bindings here
+   ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
+   ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
+   ("f"   . dirvish-file-info-menu)    ; [f]ile info
+   ("o"   . dirvish-quick-access)      ; [o]pen `dirvish-quick-access-entries'
+   ("s"   . dirvish-quicksort)         ; [s]ort flie list
+   ("r"   . dirvish-history-jump)      ; [r]ecent visited
+   ("l"   . dirvish-ls-switches-menu)  ; [l]s command flags
+   ("v"   . dirvish-vc-menu)           ; [v]ersion control commands
+   ("*"   . dirvish-mark-menu)
+   ("y"   . dirvish-yank-menu)
+   ("N"   . dirvish-narrow)
+   ("^"   . dirvish-history-last)
+   ("TAB" . dirvish-subtree-toggle)
+   ("M-f" . dirvish-history-go-forward)
+   ("M-b" . dirvish-history-go-backward)
+   ("M-e" . dirvish-emerge-menu)))
+
+; Consult
+;; Example configuration for Consult
+(use-package consult
+  :ensure t
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings in `goto-map'
+         ("M-g e" . consult-compile-error)
+         ("M-g r" . consult-grep-match)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+         ("M-t" . consult-fd)                      ;; JES
+         ("M-s c" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Tweak the register preview for `consult-register-load',
+  ;; `consult-register-store' and the built-in commands.  This improves the
+  ;; register formatting, adds thin separator lines, register sorting and hides
+  ;; the window mode line.
+  (advice-add #'register-preview :override #'consult-register-window)
+  (setq register-preview-delay 0.5)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep consult-man
+   consult-bookmark consult-recent-file consult-xref
+   consult-source-file-register
+   consult-source-recent-file consult-source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
+)
+
+;; Marginalia: Anotate completion options
+
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+;; Embark: Contextual actions
+
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  ;; Add Embark to the mouse context menu. Also enable `context-menu-mode'.
+  ;; (context-menu-mode 1)
+  ;; (add-hook 'context-menu-functions #'embark-context-menu 100)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+;; Open an vterm in the selected path
+(defun my/embark-vterm-here (file)
+  "Open a vterm buffer in the directory of FILE.
+If FILE is a directory, open vterm there; if a file, open in its directory."
+  (let ((dir (if (file-directory-p file)
+                 file
+               (file-name-directory file))))
+    (require 'vterm)
+    (let ((default-directory dir))
+      (vterm (generate-new-buffer-name "*vterm*")))))
+
+(with-eval-after-load 'embark
+  (define-key embark-file-map (kbd "V") #'my/embark-vterm-here))
+
+
+;; Vertico, instead of ido
+
+(use-package vertico
+  :custom
+  (vertico-scroll-margin 0) ;; Different scroll margin
+  (vertico-count 20) ;; Show more candidates
+  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+  :init
+  (vertico-mode))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; Emacs minibuffer configurations.
+(use-package emacs
+  :custom
+  ;; Enable context menu. `vertico-multiform-mode' adds a menu in the minibuffer
+  ;; to switch display modes.
+  (context-menu-mode t)
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (enable-recursive-minibuffers t)
+  ;; Hide commands in M-x which do not work in the current mode.  Vertico
+  ;; commands are hidden in normal buffers. This setting is useful beyond
+  ;; Vertico.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (minibuffer-prompt-properties
+   '(read-only t cursor-intangible t face minibuffer-prompt)))
+
+;; Orderless: better completion
+
+(use-package orderless
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-category-defaults nil) ;; Disable defaults, use our settings
+  (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring

@@ -3,33 +3,60 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        cua-copy-region
+        cua-cut-region
         cua-exchange-point-and-mark
         cua-paste
         dired-toggle-read-only
+        downcase-region
         electric-newline-and-maybe-indent
         emkm-spanish-4
         emkm-spanish-5
         emkm-spanish-6
         emkm-spanish-9
+        eval-print-last-sexp
         indent-rigidly
         indent-rigidly-left
+        mark-sexp
         markdown-electric-backquote
+        markdown-outdent-or-delete
         ns-prev-frame
         org-force-self-insert
         org-self-insert-command
         other-frame
         previous-buffer
         tab-complete
+        upcase-region
+        wdired--self-insert
+        wdired-finish-edit
         wdired-next-line
         yas-expand
+        yas-next-field-or-maybe-expand
         ))
 
 (setq mc/cmds-to-run-once
       '(
         beginning-of-buffer
+        comment-dwim
+        end-of-buffer
         ido-dired
+        ido-switch-buffer
+        ignore
+        magit-status
         mark-whole-buffer
         mouse-set-region
+        mouse-wheel-text-scale
+        next-buffer
+        next-error
         nonincremental-search-forward
         ns-copy-including-secondary
+        projectile-find-file
+        projectile-switch-to-buffer
+        rspec-toggle-spec-and-target
+        rspec-verify-single
+        rubocop-check-current-file
+        vterm-other-window
+        yaml-electric-backspace
+        yaml-electric-dash-and-dot
+        yas-abort-snippet
         ))
