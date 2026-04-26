@@ -49,9 +49,6 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives
-	     '("marmalade" .
-	       "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives
 	     '("org" . "https://orgmode.org/elpa/") t)
 
 (setq package-enable-at-startup nil)
@@ -94,13 +91,8 @@
                ox-reveal peg pg pgmacs prettier prettier-rc rbenv
                rbs-mode restclient robe rspec-mode rubocop
                ruby-test-mode slim-mode terraform-mode tide
-               tree-sitter-langs undo-tree vc-use-package vdiff
+               tree-sitter-langs undo-tree vdiff
                vertico vterm web-mode yaml-mode yasnippet-snippets))
- '(package-vc-selected-packages
-   '((pgmacs :vc-backend Git :url "https://github.com/emarsden/pgmacs")
-     (pg :vc-backend Git :url "https://github.com/emarsden/pg-el")
-     (vc-use-package :vc-backend Git :url
-                     "https://github.com/slotThe/vc-use-package")))
  '(prettier-rc-use-editorconfig nil)
  '(prettier-rc-use-node-modules-bin t)
  '(prettier-rc-use-package-json nil)
@@ -893,12 +885,15 @@
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
 (require 'vc-use-package)
 
-;; PGemacs
-(use-package pg
-  :vc (:fetcher github :repo emarsden/pg-el))
+;; package-vc needs the Git backend to clone packages; re-enable it temporarily
+;; so it doesn't clash with magit during normal editing
+(let ((vc-handled-backends (cons 'Git vc-handled-backends)))
+  ;; PGemacs
+  (use-package pg
+    :vc (:url "https://github.com/emarsden/pg-el"))
 
-(use-package pgmacs
-  :vc (:fetcher github :repo emarsden/pgmacs))
+  (use-package pgmacs
+    :vc (:url "https://github.com/emarsden/pgmacs")))
 
 ;; ;; aider.el
 ;; (use-package aider
@@ -929,6 +924,7 @@ same directory as the org-buffer and insert a link to this file."
     (org-display-inline-images)))
 
 (use-package aider
+  :ensure t
   :config
   ;; For latest claude sonnet model
   (setq aider-args '("--model" "gpt-4.1" "--no-auto-commits" "--no-auto-accept-architect"))
@@ -1218,6 +1214,7 @@ If FILE is a directory, open vterm there; if a file, open in its directory."
 ;; Vertico, instead of ido
 
 (use-package vertico
+  :ensure t
   :custom
   (vertico-scroll-margin 0) ;; Different scroll margin
   (vertico-count 20) ;; Show more candidates
@@ -1250,6 +1247,7 @@ If FILE is a directory, open vterm there; if a file, open in its directory."
 ;; Orderless: better completion
 
 (use-package orderless
+  :ensure t
   :custom
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
