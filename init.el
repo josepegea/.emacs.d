@@ -47,7 +47,7 @@
 
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives
 	     '("org" . "https://orgmode.org/elpa/") t)
 
@@ -84,15 +84,16 @@
  '(package-selected-packages
    '(adoc-mode aider auto-dim-other-buffers browse-at-remote bundler
                coffee-mode company consult csv-mode dirvish eglot
-               embark embark-consult exec-path-from-shell flx-ido
-               gnuplot gptel graphviz-dot-mode groovy-mode haml-mode
-               htmlize ido-vertical-mode jest jq-mode kuronami-theme
-               marginalia minitest multiple-cursors orderless
-               ox-reveal peg pg pgmacs prettier prettier-rc rbenv
-               rbs-mode restclient robe rspec-mode rubocop
-               ruby-test-mode slim-mode terraform-mode tide
-               tree-sitter-langs undo-tree vdiff
-               vertico vterm web-mode yaml-mode yasnippet-snippets))
+               embark embark-consult envrc exec-path-from-shell
+               flx-ido gnuplot gptel graphviz-dot-mode groovy-mode
+               haml-mode htmlize ido-vertical-mode jest jq-mode
+               kuronami-theme marginalia minitest multiple-cursors
+               nix-mode orderless ox-reveal peg pg pgmacs prettier
+               prettier-rc rbenv rbs-mode restclient robe rspec-mode
+               rubocop ruby-test-mode slim-mode terraform-mode tide
+               tree-sitter-langs undo-tree vdiff vertico vterm
+               web-mode yaml-mode yasnippet-snippets))
+ '(package-vc-selected-packages '((pgmacs :url "https://github.com/emarsden/pgmacs")))
  '(prettier-rc-use-editorconfig nil)
  '(prettier-rc-use-node-modules-bin t)
  '(prettier-rc-use-package-json nil)
@@ -107,7 +108,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#181a26" :foreground "#c9c9c9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 103 :width normal :foundry "JB" :family "JetBrains Mono"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#181a26" :foreground "#c9c9c9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 105 :width normal :foundry "GOOG" :family "Iosevka Charon Mono"))))
  '(cursor ((t (:background "white smoke"))))
  '(dirvish-hl-line ((t (:inherit highlight :extend t))))
  '(vterm-color-blue ((t (:foreground "SlateBlue1")))))
@@ -867,27 +868,11 @@
   :ensure t
   :defer t)
 
-;; Copilot
-
-;; Copilot Dependencies
-(use-package dash
-  :ensure t
-  :defer t)
-
-;; Copilot package
-(add-to-list 'load-path "/home/jes/.emacs.d/vendor/copilot/copilot.el")
-(require 'copilot)
-
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-
-(unless (package-installed-p 'vc-use-package)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
-(require 'vc-use-package)
-
+;; vc-use-package is not needed on Emacs 29+ (:vc is built-in)
 ;; package-vc needs the Git backend to clone packages; re-enable it temporarily
 ;; so it doesn't clash with magit during normal editing
 (let ((vc-handled-backends (cons 'Git vc-handled-backends)))
+  ;; (require 'vc-git)
   ;; PGemacs
   (use-package pg
     :vc (:url "https://github.com/emarsden/pg-el"))
@@ -1256,3 +1241,12 @@ If FILE is a directory, open vterm there; if a file, open in its directory."
   (completion-category-overrides '((file (styles partial-completion))))
   (completion-category-defaults nil) ;; Disable defaults, use our settings
   (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
+
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
+
+(use-package envrc
+  :ensure t
+  :config
+  (envrc-global-mode))
