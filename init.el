@@ -82,14 +82,13 @@
  '(ns-alternate-modifier 'meta)
  '(org-agenda-files "~/.agenda_files")
  '(package-selected-packages
-   '(adoc-mode aider auto-dim-other-buffers browse-at-remote bundler
-               coffee-mode company consult csv-mode dirvish eglot
-               embark embark-consult envrc exec-path-from-shell
-               flx-ido gnuplot gptel graphviz-dot-mode groovy-mode
-               haml-mode htmlize ido-vertical-mode jest jq-mode
-               kuronami-theme marginalia minitest multiple-cursors
-               nix-mode orderless ox-reveal peg pg pgmacs prettier
-               prettier-rc rbenv rbs-mode restclient robe rspec-mode
+   '(adoc-mode aider auto-dim-other-buffers browse-at-remote coffee-mode
+               company csv-mode dirvish embark-consult envrc
+               exec-path-from-shell flx-ido ghostel gnuplot gptel
+               graphviz-dot-mode groovy-mode haml-mode htmlize
+               ido-vertical-mode inf-ruby jest jq-mode marginalia
+               minitest multiple-cursors nix-mode orderless ox-reveal
+               pgmacs prettier-rc rbenv rbs-mode restclient rspec-mode
                rubocop ruby-test-mode slim-mode terraform-mode tide
                tree-sitter-langs undo-tree vdiff vertico vterm
                web-mode yaml-mode yasnippet-snippets))
@@ -349,6 +348,7 @@
             (add-to-list 'projectile-globally-ignored-directories "public/packs")
             (add-to-list 'projectile-globally-ignored-directories "public/packs-test")
             (add-to-list 'projectile-globally-ignored-directories "public/uploads")
+            (add-to-list 'projectile-globally-ignored-directories "vendor")
 
             ;; Specific for SmartSale' project
             (add-to-list 'projectile-globally-ignored-directories ".next")
@@ -364,6 +364,10 @@
 
 ;; Disable backups. We use git
 (setq make-backup-files nil)
+
+;; Save bookmarks to disk immediately after every change instead of only
+;; on exit, so they survive if Emacs is killed without a clean shutdown.
+(setq bookmark-save-flag 1)
 
 ;; flx && flx-ido
 (use-package flx-ido
@@ -549,9 +553,9 @@
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
   (company-mode +1)
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
-  (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
-  (flycheck-add-next-checker 'tsx-tide 'typescript-tslint))
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-next-checker 'typescript-tide 'javascript-eslint)
+  (flycheck-add-next-checker 'tsx-tide 'javascript-eslint))
 
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
@@ -863,10 +867,10 @@
   :defer t)
 (add-to-list 'auto-mode-alist '("\\.adoc\\'" . adoc-mode))
 
-;; Bundler utils
-(use-package bundler
-  :ensure t
-  :defer t)
+;; ;; Bundler utils
+;; (use-package bundler
+;;   :ensure t
+;;   :defer t)
 
 ;; vc-use-package is not needed on Emacs 29+ (:vc is built-in)
 ;; package-vc needs the Git backend to clone packages; re-enable it temporarily
@@ -1250,3 +1254,21 @@ If FILE is a directory, open vterm there; if a file, open in its directory."
   :ensure t
   :config
   (envrc-global-mode))
+
+;; Ghostel -> More modern alternative to vterm
+(use-package ghostel
+  :ensure t
+  :custom
+  ;; Advertise a TERM remote hosts already know about, so `ssh` works without
+  ;; installing the xterm-ghostty terminfo on every remote.
+  (ghostel-term "xterm-256color")
+  :bind (:map ghostel-mode-map
+              ("s-v" . ghostel-yank)
+              ("s-<return>" . ghostel-copy-mode))
+  :hook (ghostel-mode . (lambda () (display-line-numbers-mode -1)))
+  :init
+  ;; M-s-g <1-9>: jump to / create numbered ghostel buffer for current project
+  (dotimes (i 9)
+    (let ((n (1+ i)))
+      (global-set-key (kbd (format "M-s-g %d" n))
+                      `(lambda () (interactive) (ghostel-project ,n))))))

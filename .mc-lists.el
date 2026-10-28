@@ -27,6 +27,7 @@
         previous-buffer
         tab-complete
         upcase-region
+        vterm--self-insert
         wdired--self-insert
         wdired-finish-edit
         wdired-next-line
@@ -38,6 +39,7 @@
       '(
         beginning-of-buffer
         comment-dwim
+        describe-key
         end-of-buffer
         ido-dired
         ido-switch-buffer
@@ -56,6 +58,7 @@
         rspec-verify-single
         rubocop-check-current-file
         vterm-other-window
+        vterm-send-backspace
         yaml-electric-backspace
         yaml-electric-dash-and-dot
         yas-abort-snippet
