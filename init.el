@@ -1,3 +1,9 @@
+;; GC: fewer collections, and preferably while idle. With the default 800 KB
+;; threshold, terminals streaming output triggered a GC every few seconds,
+;; each a 0.2-0.3 s freeze felt as keypress hiccups.
+(setq gc-cons-threshold (* 64 1024 1024))
+(run-with-idle-timer 5 t #'garbage-collect)
+
 ;; Keys
 (setq mac-option-key-is-meta t)
 (setq mac-right-option-modifier nil)
@@ -659,7 +665,9 @@
 (use-package vterm
   :ensure t)
 
-(setq vterm-max-scrollback 100000)
+;; 10k lines, not 100k: long-running dev-server vterms grew to several MB
+;; each, and every GC has to walk all of it.
+(setq vterm-max-scrollback 10000)
 
 (add-hook 'vterm-mode-hook
           (lambda ()
