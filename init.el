@@ -1272,3 +1272,13 @@ If FILE is a directory, open vterm there; if a file, open in its directory."
     (let ((n (1+ i)))
       (global-set-key (kbd (format "M-s-g %d" n))
                       `(lambda () (interactive) (ghostel-project ,n))))))
+
+
+;; Global menu for KDE
+
+(when (require 'global-menu nil t)
+  ;; Hide Emacs's own in-window menu bar once it's in the global bar:
+  (setq global-menu-hide-local-menu-bar t)
+  ;; Verbose tracing to *Messages* + stderr while debugging:
+  ;; (setq global-menu-debug t)
+  (global-menu-mode 1))
