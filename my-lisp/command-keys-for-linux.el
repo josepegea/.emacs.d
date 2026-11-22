@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Command keys that come "for-free" on macOS and that need to be defined on Linux
 (message "Linux command keys")
 (global-set-key (kbd "s-s") 'save-buffer)

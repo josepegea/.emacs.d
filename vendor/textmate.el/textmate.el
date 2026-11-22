@@ -1,4 +1,4 @@
-;;; textmate.el --- TextMate minor mode for Emacs
+;;; textmate.el --- TextMate minor mode for Emacs  -*- lexical-binding: nil; -*-
 
 ;; Copyright (C) 2008, 2009 Chris Wanstrath <chris@ozmm.org>
 

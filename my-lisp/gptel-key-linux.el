@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 (require 'gnome-keyring)
 
 (setq gptel-api-key (get-password-from-keyring "oai_api key"))

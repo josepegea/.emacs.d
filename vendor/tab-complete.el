@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Use tab either for autocompletion or indentation
 ;; See https://lokeshw24.wordpress.com/2013/08/07/emacs-how-to-auto-complete-words-by-tab-key/
 ;;;;;;;;;;;;;;;;;

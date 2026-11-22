@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Aquamacs tools
 ;; some helper functions for Aquamacs
  

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; GC: fewer collections, and preferably while idle. With the default 800 KB
 ;; threshold, terminals streaming output triggered a GC every few seconds,
 ;; each a 0.2-0.3 s freeze felt as keypress hiccups.

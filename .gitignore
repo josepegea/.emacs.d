@@ -1,5 +1,6 @@
 auto-save-list/
 bookmarks
+projects
 elpa/
 history
 ido.last
@@ -8,4 +9,5 @@ projectile-bookmarks.eld
 transient/
 tramp
 .mc-lists.el
+eln-cache/
 *~

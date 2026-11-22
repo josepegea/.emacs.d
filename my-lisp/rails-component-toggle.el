@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 (defun rails-component-toggle ()
   "Toggle between a ViewComponent Ruby file and its sidecar ERB template, handling nested subfolders."
   (interactive)

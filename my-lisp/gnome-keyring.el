@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 (defun get-password-from-keyring (path)
   "Retrieves a password from GNOME Keyring using `secreet-tool` command."
   (let ((command (concat "secret-tool lookup " path)))

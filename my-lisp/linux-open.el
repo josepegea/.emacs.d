@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Open files in dired mode using 'open'
 ;; See http://jblevins.org/log/dired-open
 (eval-after-load "dired"

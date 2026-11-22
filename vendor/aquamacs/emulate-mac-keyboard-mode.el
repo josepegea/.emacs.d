@@ -1,4 +1,4 @@
-;; -*-mode:emacs-lisp; coding: utf-8;-*-'
+;; -*-mode:emacs-lisp; coding: utf-8; lexical-binding: nil;-*-'
 ;; emulate-mac-*-keyboard-modes for Aquamacs
 
 

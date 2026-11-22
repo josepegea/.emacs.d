@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 (defun jes-enter-selection ()
   "Replaces isearch search string with current selection, as Cmd-e in macOS"
   (interactive)

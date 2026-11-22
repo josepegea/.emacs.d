@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Hide first lines of rgrep, projectile-find-in-project, etc
 ;; See http://stackoverflow.com/a/16133543
 

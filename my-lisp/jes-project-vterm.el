@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 (require 'vterm)
 
 (defun my/project-root ()

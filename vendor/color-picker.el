@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil; -*-
 ;; Use the Mac System Color Panel to capture hex color values in any mode
 ;; Taken from https://gist.github.com/a3ammar/2357d6115ddd999c23e6
 ;; And https://www.reddit.com/r/emacs/comments/2hscnp/make_emacs_use_os_x_color_picker/
