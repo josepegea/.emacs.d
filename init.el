@@ -174,6 +174,18 @@
 )
 (add-hook 'markdown-mode-hook  'my-markdown-mode-hook)
 
+;; Spell checking in text modes (incl. Org and Markdown) with hunspell,
+;; checking English, Spanish and Catalan at once: a word is only flagged
+;; if no dictionary knows it. Only where hunspell is installed (NixOS
+;; provides it and the dictionaries system-wide).
+(when (executable-find "hunspell")
+  (with-eval-after-load 'ispell
+    (setq ispell-program-name "hunspell")
+    (setq ispell-dictionary "en_GB,en_US,es_ES,ca_ES")
+    (ispell-set-spellchecker-params)
+    (ispell-hunspell-add-multi-dic "en_GB,en_US,es_ES,ca_ES"))
+  (add-hook 'text-mode-hook #'flyspell-mode))
+
 ;; Never use tabs. Only spaces. And only 2 of them!
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
@@ -819,11 +831,14 @@
       (global-set-key (kbd "C-c g p t") 'gptel)
       (global-set-key (kbd "C-c g p s") 'gptel-send)))
 
-(gptel-make-openai "llamafile"          ;Any name
-  :stream t                             ;Stream responses
+;; Local llama.cpp router on pamda (systemd user service, see
+;; Dotfiles/doc/nixos/LOCAL_LLM.md). Model names must match the router's
+;; preset IDs: the router loads the requested one on demand.
+(gptel-make-openai "llama.cpp"
+  :stream t
   :protocol "http"
-  :host "localhost:8080"                ;Llama.cpp server location
-  :models '("mixtral"))                    ;Any names, doesn't matter for Llama
+  :host "localhost:9931"
+  :models '(qwen3-30b-a3b qwen3-coder-30b-a3b))
 
 (cond
  ((string-equal system-type "gnu/linux")
